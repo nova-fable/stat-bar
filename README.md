@@ -1,6 +1,6 @@
 # StatBar
 
-[![CI](https://github.com/nova-fable/StatBar/actions/workflows/ci.yml/badge.svg)](https://github.com/nova-fable/StatBar/actions/workflows/ci.yml)
+[![CI](https://github.com/nova-fable/stat-bar/actions/workflows/ci.yml/badge.svg)](https://github.com/nova-fable/stat-bar/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 macOS 菜单栏系统监视器：状态栏常驻显示 CPU / 内存 / 网速，点击弹出面板查看实时数据与明细。

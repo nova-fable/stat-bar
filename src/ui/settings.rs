@@ -17,7 +17,7 @@ use crate::app;
 
 /// 开发者署名、项目仓库与开源协议（关于卡片展示）
 const AUTHOR: &str = "dsjerry";
-const REPO_URL: &str = "https://github.com/nova-fable/StatBar";
+const REPO_URL: &str = "https://github.com/nova-fable/stat-bar";
 const LICENSE: &str = "MIT";
 
 pub fn render(

@@ -5,7 +5,7 @@ edition = "2021"
 description = "StatBar — macOS 菜单栏系统监视器"
 authors = ["dsjerry"]
 license = "MIT"
-repository = "https://github.com/nova-fable/StatBar"
+repository = "https://github.com/nova-fable/stat-bar"
 readme = "README.md"
 
 [dependencies]
