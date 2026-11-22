@@ -23,6 +23,12 @@ objc2 / AppKit 负责常驻状态栏，GPUI（经 gpui-kit）负责点击弹出�
 | 面板关闭（常态） | 约 16 MB | 状态栏就绪约 160 ms |
 | 面板打开 | 约 31 MB（shader 加载瞬时峰值约 64 MB） | 首次打开约 390 ms（一次性） |
 
+## 安装
+
+从 [Releases](https://github.com/nova-fable/stat-bar/releases) 下载最新的 `StatBar-vX.Y.Z-macos-arm64.dmg`，打开后将 StatBar 拖入 Applications。
+
+当前版本仅做 ad-hoc 签名、未经 Apple 公证，首次打开时 macOS 会提示无法验证开发者。可以在 Finder 中右键 StatBar 选择「打开」；若仍被拦截，前往「系统设置 → 隐私与安全性」，点击「仍要打开」。
+
 ## 环境要求
 
 - macOS 27+，Apple Silicon（aarch64）
@@ -41,6 +47,13 @@ cargo run --release
 ```
 
 左键点击状态栏图标即可开关面板。
+
+打包 `.app` 与 DMG（需先将图标与背景图放入 `assets/`）：
+
+```sh
+scripts/bundle.sh                        # 生成 target/bundle/StatBar.app
+scripts/make-dmg.sh StatBar.dmg          # 生成拖拽安装的 DMG
+```
 
 调试参数（启动即进入指定视图，便于开发时直接测试）：
 
@@ -65,6 +78,8 @@ src/
 ├── icons.rs         进程应用图标提取（用于进程明细）
 └── ui/              面板视图：主页、资源详情、设置与主题三态
 ```
+
+`scripts/` 为打包脚本（`bundle.sh` 生成 `.app`，`make-dmg.sh` 生成 DMG），`assets/` 存放应用图标与 DMG 背景图。
 
 ## 贡献
 

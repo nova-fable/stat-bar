@@ -38,21 +38,19 @@ jobs:
       - name: 安装 Metal Toolchain
         run: xcodebuild -downloadComponent MetalToolchain
 
-      - name: 构建（release，锁定依赖）
-        run: cargo build --release --locked
+      - name: 构建 StatBar.app
+        run: scripts/bundle.sh
 
-      - name: 打包与校验和
+      - name: 生成 DMG 与校验和
         run: |
-          ARCHIVE="StatBar-${GITHUB_REF_NAME}-macos-arm64.tar.gz"
-          mkdir dist
-          cp target/release/statbar LICENSE README.md dist/
-          tar -C dist -czf "$ARCHIVE" .
-          shasum -a 256 "$ARCHIVE" > "$ARCHIVE.sha256"
+          DMG="StatBar-${GITHUB_REF_NAME}-macos-arm64.dmg"
+          scripts/make-dmg.sh "$DMG"
+          shasum -a 256 "$DMG" > "$DMG.sha256"
 
       - name: 创建 GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" StatBar-*.tar.gz StatBar-*.tar.gz.sha256 \
+          gh release create "$GITHUB_REF_NAME" StatBar-*.dmg StatBar-*.dmg.sha256 \
             --title "$GITHUB_REF_NAME" \
             --generate-notes
