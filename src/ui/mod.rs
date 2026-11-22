@@ -19,6 +19,7 @@ use gpui_kit::component::theme::{ActiveTheme, Theme, ThemeMode};
 use gpui_kit::assets::IconName;
 
 use crate::app;
+use crate::i18n::tr;
 use crate::sampler;
 use crate::sampler::Hist;
 
@@ -52,9 +53,9 @@ impl Resource {
     pub fn title(self) -> &'static str {
         match self {
             Self::Cpu => "CPU",
-            Self::Memory => "内存",
-            Self::Network => "网络",
-            Self::Disk => "磁盘",
+            Self::Memory => tr("内存", "Memory"),
+            Self::Network => tr("网络", "Network"),
+            Self::Disk => tr("磁盘", "Disk"),
         }
     }
 
@@ -158,9 +159,9 @@ impl ThemeChoice {
 
     pub fn label(self) -> &'static str {
         match self {
-            Self::System => "跟随系统",
-            Self::Light => "亮色",
-            Self::Dark => "暗色",
+            Self::System => tr("跟随系统", "System"),
+            Self::Light => tr("亮色", "Light"),
+            Self::Dark => tr("暗色", "Dark"),
         }
     }
 
@@ -408,7 +409,7 @@ pub(crate) fn trend_chart(
             .fill(lighten(color, 0.6))
             .stroke(color)
             .name(label)
-            .tooltip_title(|p| SharedString::from(format!("{}s 前", p.0)))
+            .tooltip_title(|p| SharedString::from(format!("{}s {}", p.0, tr("前", "ago"))))
             .tooltip_value(|_, _, v| SharedString::from(format!("{:.1}%", v)))
             .y_domain(0.0, 100.0)
             .x_axis(false)
@@ -502,20 +503,20 @@ pub(crate) fn cpu_trend_chart(
             .y(|p| p.user + p.sys)
             .fill(user_fill)
             .stroke(user_color)
-            .name("用户")
+            .name(tr("用户", "User"))
             .linear()
             // 第二层：系统占用，浅红填充覆盖底部，露出上方蓝色用户带
             .y(|p| p.sys)
             .fill(sys_fill)
             .stroke(sys_color)
-            .name("系统")
+            .name(tr("系统", "System"))
             .linear()
-            .tooltip_title(|p| SharedString::from(format!("{}s 前", p.ago)))
+            .tooltip_title(|p| SharedString::from(format!("{}s {}", p.ago, tr("前", "ago"))))
             .tooltip_value(|p, ix, _| {
                 SharedString::from(if ix == 0 {
-                    format!("用户 {:.1}%", p.user)
+                    format!("{} {:.1}%", tr("用户", "User"), p.user)
                 } else {
-                    format!("系统 {:.1}%", p.sys)
+                    format!("{} {:.1}%", tr("系统", "System"), p.sys)
                 })
             })
             .y_domain(0.0, 100.0)

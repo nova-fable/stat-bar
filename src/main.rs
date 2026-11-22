@@ -12,6 +12,7 @@
 
 mod app;
 mod fmt;
+mod i18n;
 mod icons;
 mod prefs;
 mod sampler;
@@ -33,6 +34,7 @@ fn main() {
         eprintln!("[statbar] gpui run 回调: {:?}", t0.elapsed());
         gpui_kit::init(cx);
         // 主题外观：恢复持久化的选择并应用（默认跟随系统，亮 / 暗可在设置切换）
+        i18n::init();
         ui::init_theme(cx);
         status_item::setup(t0);
 

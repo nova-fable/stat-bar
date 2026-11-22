@@ -2,6 +2,7 @@
 
 use objc2_foundation::{NSUserDefaults, NSString, NSInteger};
 
+use crate::i18n::LangChoice;
 use crate::ui::{PanelSkin, ThemeChoice};
 
 /// 底色（0xRRGGBB 打包整数）
@@ -10,6 +11,8 @@ const KEY_SKIN_BASE: &str = "skinBase";
 const KEY_SKIN_ALPHA: &str = "skinAlpha";
 /// 主题外观选择（0 跟随系统 / 1 亮色 / 2 暗色）
 const KEY_THEME_CHOICE: &str = "themeChoice";
+/// 语言选择（0 跟随系统 / 1 中文 / 2 English）
+const KEY_LANG_CHOICE: &str = "langChoice";
 
 /// 启动时读回底色与透明度；键缺失时返回 None（保持内置默认）
 pub(crate) fn load_skin() -> Option<PanelSkin> {
@@ -37,6 +40,31 @@ pub(crate) fn load_theme_choice() -> Option<ThemeChoice> {
         2 => Some(ThemeChoice::Dark),
         _ => None,
     }
+}
+
+/// 启动时读回语言选择；键缺失或值非法返回 None
+pub(crate) fn load_lang_choice() -> Option<LangChoice> {
+    let d = NSUserDefaults::standardUserDefaults();
+    let key = NSString::from_str(KEY_LANG_CHOICE);
+    if d.objectForKey(&key).is_none() {
+        return None;
+    }
+    match d.integerForKey(&key) {
+        0 => Some(LangChoice::System),
+        1 => Some(LangChoice::Zh),
+        2 => Some(LangChoice::En),
+        _ => None,
+    }
+}
+
+/// 保存语言选择（设置切换时调用）
+pub(crate) fn save_lang_choice(choice: LangChoice) {
+    let index: NSInteger = match choice {
+        LangChoice::System => 0,
+        LangChoice::Zh => 1,
+        LangChoice::En => 2,
+    };
+    NSUserDefaults::standardUserDefaults().setInteger_forKey(index, &NSString::from_str(KEY_LANG_CHOICE));
 }
 
 /// 保存底色与透明度（色块点击 / 滑条拖动时调用）

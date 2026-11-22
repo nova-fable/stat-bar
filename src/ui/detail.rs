@@ -11,6 +11,7 @@ use gpui_kit::component::theme::Theme;
 use super::{PanelView, Resource, View};
 use crate::app;
 use crate::fmt::fmt_speed;
+use crate::i18n::tr;
 use crate::icons;
 use crate::sampler::{self, Snapshot};
 
@@ -68,19 +69,19 @@ pub fn render(
             root = root
                 .child(
                     card_shell(theme)
-                        .child(caption(theme, "使用率"))
+                        .child(caption(theme, tr("使用率", "Usage")))
                         .child(super::big_value(theme, format!("{:.0}%", s.cpu)))
                         // 用户态 / 系统态图例（配色与折线一致，参考系统活动监视器）
                         .child(super::legend_row(
                             &theme,
                             rgb(0x0a84ff).into(),
-                            "用户",
+                            tr("用户", "User"),
                             format!("{:.1}%", s.cpu_user),
                         ))
                         .child(super::legend_row(
                             &theme,
                             rgb(0xff453a).into(),
-                            "系统",
+                            tr("系统", "System"),
                             format!("{:.1}%", s.cpu_sys),
                         ))
                         .child(super::cpu_trend_chart(
@@ -91,7 +92,7 @@ pub fn render(
                 )
                 .child(list_card(
                     theme,
-                    "进程 Top · CPU 占用",
+                    tr("进程 Top · CPU 占用", "Top processes · CPU"),
                     Resource::Cpu,
                     rows,
                 ));
@@ -101,7 +102,7 @@ pub fn render(
             root = root
                 .child(
                     card_shell(theme)
-                        .child(caption(theme, "使用率"))
+                        .child(caption(theme, tr("使用率", "Usage")))
                         .child(super::big_value(theme, format!("{:.0}%", s.mem_pct)))
                         // 分段堆叠条：联动 / 活跃 / 已压缩 / 实际可用
                         .child(
@@ -120,37 +121,37 @@ pub fn render(
                         .child(super::legend_row(
                             &theme,
                             rgb(0x3ea6ff).into(),
-                            "联动",
+                            tr("联动", "Wired"),
                             format!("{:.2} GB", s.wired_gb),
                         ))
                         .child(super::legend_row(
                             &theme,
                             rgb(0xff5c5c).into(),
-                            "活跃",
+                            tr("活跃", "Active"),
                             format!("{:.2} GB", s.active_gb),
                         ))
                         .child(super::legend_row(
                             &theme,
                             rgb(0xa865db).into(),
-                            "已压缩",
+                            tr("已压缩", "Compressed"),
                             format!("{:.2} GB", s.compressed_gb),
                         ))
                         .child(super::legend_row(
                             &theme,
                             rgb(0x98989d).into(),
-                            "实际可用",
+                            tr("实际可用", "Available"),
                             format!("{:.2} GB", s.avail_gb),
                         ))
                         .child(super::trend_chart(
                             mem_data,
                             rgb(0x30d158).into(),
-                            "内存",
+                            tr("内存", "Memory"),
                             120.0,
                         )),
                 )
                 .child(list_card(
                     theme,
-                    "进程 Top · 内存占用",
+                    tr("进程 Top · 内存占用", "Top processes · Memory"),
                     Resource::Memory,
                     rows,
                 ));
@@ -159,25 +160,25 @@ pub fn render(
             root = root
                 .child(
                     card_shell(theme)
-                        .child(caption(theme, "实时速率"))
+                        .child(caption(theme, tr("实时速率", "Live rate")))
                         .child(super::net_row(
                             &theme,
                             IconName::ArrowUp,
                             rgb(0xff9f0a).into(),
-                            "发送",
+                            tr("发送", "Upload"),
                             fmt_speed(s.tx),
                         ))
                         .child(super::net_row(
                             &theme,
                             IconName::ArrowDown,
                             rgb(0x64d2ff).into(),
-                            "接收",
+                            tr("接收", "Download"),
                             fmt_speed(s.rx),
                         )),
                 )
                 .child(list_card(
                     theme,
-                    "应用网络占用",
+                    tr("应用网络占用", "Per-app network"),
                     Resource::Network,
                     rows,
                 ));
@@ -187,24 +188,24 @@ pub fn render(
             root = root
                 .child(
                     card_shell(theme)
-                        .child(caption(theme, "IO 速率"))
+                        .child(caption(theme, tr("IO 速率", "I/O rate")))
                         .child(super::disk_io_chart(disk_r, disk_w, 140.0))
                         .child(super::legend_row(
                             &theme,
                             rgb(0xbf5af2).into(),
-                            "读取",
+                            tr("读取", "Read"),
                             fmt_speed(s.disk_read),
                         ))
                         .child(super::legend_row(
                             &theme,
                             rgb(0xff375f).into(),
-                            "写入",
+                            tr("写入", "Write"),
                             fmt_speed(s.disk_write),
                         )),
                 )
                 .child(list_card(
                     theme,
-                    "进程 Top · 磁盘 IO",
+                    tr("进程 Top · 磁盘 IO", "Top processes · Disk I/O"),
                     Resource::Disk,
                     rows,
                 ));
@@ -251,7 +252,7 @@ fn list_card(
                     div()
                         .text_size(px(11.))
                         .text_color(theme.muted_foreground)
-                        .child("正在统计…"),
+                        .child(tr("正在统计…", "Collecting…")),
                 ),
         );
     } else {

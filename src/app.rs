@@ -21,7 +21,7 @@ use crate::ui::{PanelView, Resource, View};
 pub const PANEL_W: f32 = 360.0;
 /// 各视图高度（切换视图时联动窗口高度）
 pub const VIEW_HOME_H: f32 = 686.0;
-pub const VIEW_SETTINGS_H: f32 = 618.0;
+pub const VIEW_SETTINGS_H: f32 = 650.0;
 pub const VIEW_DETAIL_H: f32 = 686.0;
 /// CPU 详情：比其他详情多两行用户态/系统态图例，趋势图也更高
 pub const VIEW_CPU_DETAIL_H: f32 = 778.0;

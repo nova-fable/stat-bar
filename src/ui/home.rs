@@ -11,6 +11,7 @@ use gpui_kit::component::theme::Theme;
 use super::{PanelView, Resource, View};
 use crate::app;
 use crate::fmt::fmt_speed;
+use crate::i18n::tr;
 use crate::sampler::{self, Snapshot};
 
 pub fn render(cx: &mut Context<PanelView>, theme: &Theme, s: &Snapshot) -> Div {
@@ -46,7 +47,7 @@ pub fn render(cx: &mut Context<PanelView>, theme: &Theme, s: &Snapshot) -> Div {
         )
         // CPU 卡 → CPU 详情
         .child(
-            card(cx, theme, "card-cpu", Resource::Cpu, "使用率")
+            card(cx, theme, "card-cpu", Resource::Cpu, tr("使用率", "Usage"))
                 .child(super::big_value(theme, format!("{:.0}%", s.cpu)))
                 .child(super::cpu_trend_chart(cpu_user_data, cpu_sys_data, 56.0)),
         )
@@ -58,8 +59,8 @@ pub fn render(cx: &mut Context<PanelView>, theme: &Theme, s: &Snapshot) -> Div {
                 "card-mem",
                 Resource::Memory,
                 &format!(
-                    "已用 {:.1} / 共 {:.1} GB",
-                    s.mem_used_gb, s.mem_total_gb
+                    "{} {:.1} / {} {:.1} GB",
+                    tr("已用", "Used"), s.mem_used_gb, tr("共", "Total"), s.mem_total_gb
                 ),
             )
             .child(super::big_value(theme, format!("{:.0}%", s.mem_pct)))
@@ -80,31 +81,31 @@ pub fn render(cx: &mut Context<PanelView>, theme: &Theme, s: &Snapshot) -> Div {
             .child(super::legend_row(
                 &theme,
                 rgb(0x3ea6ff).into(),
-                "联动",
+                tr("联动", "Wired"),
                 format!("{:.2} GB", s.wired_gb),
             ))
             .child(super::legend_row(
                 &theme,
                 rgb(0xff5c5c).into(),
-                "活跃",
+                tr("活跃", "Active"),
                 format!("{:.2} GB", s.active_gb),
             ))
             .child(super::legend_row(
                 &theme,
                 rgb(0xa865db).into(),
-                "已压缩",
+                tr("已压缩", "Compressed"),
                 format!("{:.2} GB", s.compressed_gb),
             ))
             .child(super::legend_row(
                 &theme,
                 rgb(0x98989d).into(),
-                "实际可用",
+                tr("实际可用", "Available"),
                 format!("{:.2} GB", s.avail_gb),
             ))
             .child(super::trend_chart(
                 mem_data,
                 rgb(0x30d158).into(),
-                "内存",
+                tr("内存", "Memory"),
                 56.0,
             )),
         )
@@ -114,7 +115,7 @@ pub fn render(cx: &mut Context<PanelView>, theme: &Theme, s: &Snapshot) -> Div {
                 .flex()
                 .gap_2()
                 .child(
-                    card(cx, theme, "card-net", Resource::Network, "实时速率")
+                    card(cx, theme, "card-net", Resource::Network, tr("实时速率", "Live rate"))
                         .flex_1()
                         .child(
                             div().flex().flex_col().gap_1()
@@ -122,20 +123,20 @@ pub fn render(cx: &mut Context<PanelView>, theme: &Theme, s: &Snapshot) -> Div {
                                     &theme,
                                     IconName::ArrowUp,
                                     rgb(0xff9f0a).into(),
-                                    "发送",
+                                    tr("发送", "Upload"),
                                     fmt_speed(s.tx),
                                 ))
                                 .child(super::net_row(
                                     &theme,
                                     IconName::ArrowDown,
                                     rgb(0x64d2ff).into(),
-                                    "接收",
+                                    tr("接收", "Download"),
                                     fmt_speed(s.rx),
                                 )),
                         ),
                 )
                 .child(
-                    card(cx, theme, "card-disk", Resource::Disk, "读写")
+                    card(cx, theme, "card-disk", Resource::Disk, tr("读写", "I/O"))
                         .flex_1()
                         .child(
                             div().flex().flex_col().gap_1()
@@ -143,14 +144,14 @@ pub fn render(cx: &mut Context<PanelView>, theme: &Theme, s: &Snapshot) -> Div {
                                     &theme,
                                     IconName::ArrowDown,
                                     rgb(0xbf5af2).into(),
-                                    "读取",
+                                    tr("读取", "Read"),
                                     fmt_speed(s.disk_read),
                                 ))
                                 .child(super::net_row(
                                     &theme,
                                     IconName::ArrowUp,
                                     rgb(0xff375f).into(),
-                                    "写入",
+                                    tr("写入", "Write"),
                                     fmt_speed(s.disk_write),
                                 )),
                         ),

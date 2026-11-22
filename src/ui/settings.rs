@@ -15,6 +15,7 @@ use gpui_kit::component::theme::Theme;
 
 use super::{PanelSkin, PanelView, SKIN_DARK_END, SKIN_PRESETS, ThemeChoice, View};
 use crate::app;
+use crate::i18n::{self, LangChoice, tr};
 
 /// 开发者署名、项目仓库与开源协议（关于卡片展示），以及点击后跳转的页面
 const AUTHOR: &str = "dsjerry";
@@ -71,7 +72,7 @@ pub fn render(
                         .child(
                             div()
                                 .font_weight(gpui_kit::FontWeight::MEDIUM)
-                                .child("设置"),
+                                .child(tr("设置", "Settings")),
                         ),
                 ),
         )
@@ -86,14 +87,14 @@ pub fn render(
                 .border_1()
                 .border_color(theme.border)
                 .rounded(px(12.))
-                .child(section_title(theme, "外观"))
+                .child(section_title(theme, tr("外观", "Appearance")))
                 // 主题：跟随系统 / 亮色 / 暗色（gpui-kit 分段控件）
                 .child(
                     div()
                         .flex()
                         .justify_between()
                         .items_center()
-                        .child(div().text_color(theme.foreground).child("主题"))
+                        .child(div().text_color(theme.foreground).child(tr("主题", "Theme")))
                         .child(
                             TabBar::new("theme-choice")
                                 .segmented()
@@ -109,13 +110,31 @@ pub fn render(
                                 })),
                         ),
                 )
+                // 语言：跟随系统 / 中文 / English（分段控件，切换后整个面板即时重绘）
+                .child(
+                    div()
+                        .flex()
+                        .justify_between()
+                        .items_center()
+                        .child(div().text_color(theme.foreground).child(tr("语言", "Language")))
+                        .child(
+                            TabBar::new("lang-choice")
+                                .segmented()
+                                .children(LangChoice::ALL.iter().map(|c| c.label()))
+                                .selected_index(i18n::choice().index())
+                                .on_click(cx.listener(|_, ix, _, cx| {
+                                    i18n::set_choice(LangChoice::from_index(*ix));
+                                    cx.notify();
+                                })),
+                        ),
+                )
                 // 底色：只展示与当前外观同组的预设，保证文字始终可读
                 .child(
                     div()
                         .flex()
                         .justify_between()
                         .items_center()
-                        .child(div().text_color(theme.foreground).child("底色"))
+                        .child(div().text_color(theme.foreground).child(tr("底色", "Base color")))
                         .child(div().flex().gap_1().items_center().children(
                             SKIN_PRESETS
                                 .iter()
@@ -129,7 +148,7 @@ pub fn render(
                         .flex()
                         .justify_between()
                         .items_center()
-                        .child(div().text_color(theme.foreground).child("透明度"))
+                        .child(div().text_color(theme.foreground).child(tr("透明度", "Opacity")))
                         .child(
                             div()
                                 .flex()
@@ -161,12 +180,12 @@ pub fn render(
                 .border_1()
                 .border_color(theme.border)
                 .rounded(px(12.))
-                .child(section_title(theme, "框架信息"))
-                .child(kv_row(theme, "界面框架", "GPUI · gpui-kit 0.10".into()))
-                .child(kv_row(theme, "系统采样", "sysinfo 0.33".into()))
-                .child(kv_row(theme, "原生绑定", "objc2 0.6".into()))
-                .child(kv_row(theme, "渲染后端", "Metal".into()))
-                .child(kv_row(theme, "系统", os)),
+                .child(section_title(theme, tr("框架信息", "Frameworks")))
+                .child(kv_row(theme, tr("界面框架", "UI framework"), "GPUI · gpui-kit 0.10".into()))
+                .child(kv_row(theme, tr("系统采样", "Sampling"), "sysinfo 0.33".into()))
+                .child(kv_row(theme, tr("原生绑定", "Bindings"), "objc2 0.6".into()))
+                .child(kv_row(theme, tr("渲染后端", "Renderer"), "Metal".into()))
+                .child(kv_row(theme, tr("系统", "OS"), os)),
         )
         // 关于：应用 / 版本 / 开发者 / 仓库 / 协议（开发者、仓库、协议可点击跳转）
         .child(
@@ -179,16 +198,16 @@ pub fn render(
                 .border_1()
                 .border_color(theme.border)
                 .rounded(px(12.))
-                .child(section_title(theme, "关于"))
-                .child(kv_row(theme, "应用", "StatBar".into()))
+                .child(section_title(theme, tr("关于", "About")))
+                .child(kv_row(theme, tr("应用", "App"), "StatBar".into()))
                 .child(kv_row(
                     theme,
-                    "版本",
+                    tr("版本", "Version"),
                     format!("v{}", env!("CARGO_PKG_VERSION")),
                 ))
-                .child(kv_link_row(theme, "author", "开发者", AUTHOR, AUTHOR_URL))
-                .child(kv_link_row(theme, "repo", "仓库", REPO_URL, REPO_URL))
-                .child(kv_link_row(theme, "license", "协议", LICENSE, LICENSE_URL)),
+                .child(kv_link_row(theme, "author", tr("开发者", "Developer"), AUTHOR, AUTHOR_URL))
+                .child(kv_link_row(theme, "repo", tr("仓库", "Repository"), REPO_URL, REPO_URL))
+                .child(kv_link_row(theme, "license", tr("协议", "License"), LICENSE, LICENSE_URL)),
         )
 }
 

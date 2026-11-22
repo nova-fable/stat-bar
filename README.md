@@ -1,5 +1,7 @@
 # StatBar
 
+**中文** | [English](README.en.md)
+
 [![CI](https://github.com/nova-fable/stat-bar/actions/workflows/ci.yml/badge.svg)](https://github.com/nova-fable/stat-bar/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -9,7 +11,7 @@ macOS 菜单栏系统监视器：状态栏常驻显示 CPU / 内存 / 网速，�
 
 - **状态栏**：常驻组合图标，实时显示 CPU 与网速
 - **面板**：CPU、内存、网络、磁盘卡片，点击进入详情视图（大图趋势、内存分类、进程与网卡明细）
-- **设置**：主题跟随系统 / 亮色 / 暗色，面板底色与透明度可调，设置持久化
+- **设置**：主题跟随系统 / 亮色 / 暗色，语言跟随系统 / 中文 / English，面板底色与透明度可调，设置持久化
 - **低占用**：主视图不枚举进程；进程与网卡明细仅在详情视图打开时采样
 
 ## 技术路线
@@ -73,7 +75,8 @@ src/
 ├── app.rs           面板窗口生命周期：打开 / 定位 / 按视图联动高度 / 失焦收起
 ├── status_item.rs   菜单栏状态项：组合图标绘制（CoreGraphics + CoreText）、点击桥接、采样定时器
 ├── sampler.rs       系统采样与明细发布（快照 / 历史 / 内存分类 / 进程 / 网卡 / 磁盘）
-├── prefs.rs         设置持久化（底色 / 透明度 / 主题外观，写入 NSUserDefaults）
+├── i18n.rs          界面国际化：中文 / 英文，默认跟随系统语言
+├── prefs.rs         设置持久化（底色 / 透明度 / 主题外观 / 语言，写入 NSUserDefaults）
 ├── fmt.rs           数值格式化
 ├── icons.rs         进程应用图标提取（用于进程明细）
 └── ui/              面板视图：主页、资源详情、设置与主题三态
