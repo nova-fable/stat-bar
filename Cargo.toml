@@ -1,0 +1,60 @@
+[package]
+name = "statbar"
+version = "0.1.0"
+edition = "2021"
+description = "StatBar — macOS 菜单栏系统监视器"
+authors = ["dsjerry"]
+license = "MIT"
+repository = "https://github.com/nova-fable/StatBar"
+readme = "README.md"
+
+[dependencies]
+# AppKit 绑定：状态栏、菜单。特性按用到的类开启
+objc2 = "0.6"
+objc2-foundation = { version = "0.3", features = ["NSString", "NSTimer", "NSGeometry", "NSAttributedString", "NSDictionary", "NSRange", "NSUserDefaults"] }
+objc2-app-kit = { version = "0.3", features = [
+    "NSApplication",
+    "NSEvent",
+    "NSRunningApplication",
+    "NSStatusBar",
+    "NSButton",
+    "NSControl",
+    "NSResponder",
+    "NSView",
+    "NSVisualEffectView",
+    "NSMenu",
+    "NSMenuItem",
+    "NSWindow",
+    "NSScreen",
+    "NSColor",
+    "NSFont",
+    "NSFontDescriptor",
+    "NSImage",
+    "NSWorkspace",
+    "NSGraphicsContext",
+] }
+# 菜单栏迷你趋势图：CoreGraphics 位图绘制
+objc2-core-graphics = { version = "0.3", features = [
+    "CGColorSpace",
+    "CGContext",
+    "CGBitmapContext",
+    "CGImage",
+] }
+# 菜单栏网络堆叠文字：CoreText 画行
+# 磁盘读写统计：IOKit 注册表里要用到的 CF 字典 / 数字 / 字符串
+objc2-core-foundation = { version = "0.3", features = ["CFAttributedString", "CFDictionary", "CFNumber", "CFString"] }
+objc2-core-text = { version = "0.3", features = ["CTLine", "objc2-core-graphics"] }
+# NSTimer 的 block 变体需要它
+block2 = "0.6"
+# AppKit 点击 → GPUI 的桥接通道（gpui 依赖树里已有，executor 无关）
+async-channel = "2"
+# 面板毛玻璃层透明度同步：经 raw handle 拿 gpui content view（NSView）
+raw-window-handle = "0.6"
+# 系统采样：CPU / 内存 / 网络（跨平台，内部走各平台原生 API）
+sysinfo = "0.33"
+# macOS VM 分类内存统计（联动/活跃/已压缩）：host_statistics64
+libc = "0.2"
+image = "0.25"
+smallvec = "1"
+# UI：gpui-kit 是 gpui 的统一门面（应用只列这一个），gpui 由它带入
+gpui-kit = "0.10.0"

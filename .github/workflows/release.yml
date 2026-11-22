@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: 打包并发布（macOS arm64）
+    runs-on: macos-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v7
+
+      - name: 校验标签与 Cargo.toml 版本一致
+        run: |
+          VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          if [ "$GITHUB_REF_NAME" != "v$VERSION" ]; then
+            echo "标签 $GITHUB_REF_NAME 与 Cargo.toml 版本 v$VERSION 不一致" >&2
+            exit 1
+          fi
+
+      - name: 安装 Rust 工具链
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: 缓存 Cargo 依赖与构建产物
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+
+      - name: 安装 Metal Toolchain
+        run: xcodebuild -downloadComponent MetalToolchain
+
+      - name: 构建（release，锁定依赖）
+        run: cargo build --release --locked
+
+      - name: 打包与校验和
+        run: |
+          ARCHIVE="StatBar-${GITHUB_REF_NAME}-macos-arm64.tar.gz"
+          mkdir dist
+          cp target/release/statbar LICENSE README.md dist/
+          tar -C dist -czf "$ARCHIVE" .
+          shasum -a 256 "$ARCHIVE" > "$ARCHIVE.sha256"
+
+      - name: 创建 GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" StatBar-*.tar.gz StatBar-*.tar.gz.sha256 \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes
