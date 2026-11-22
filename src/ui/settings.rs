@@ -1,6 +1,7 @@
-//! 设置视图：外观（主题模式 / 底色预设 / 透明度）/ 关于（版本 / 开发者 / 仓库 / 协议）/ 框架信息。
+//! 设置视图：外观（主题模式 / 底色预设 / 透明度）/ 框架信息 / 关于（版本 / 开发者 / 仓库 / 协议）。
 
-use objc2_foundation::NSProcessInfo;
+use objc2_app_kit::NSWorkspace;
+use objc2_foundation::{NSProcessInfo, NSString, NSURL};
 
 use gpui_kit::{
     Context, Div, InteractiveElement, IntoElement, ParentElement, SharedString,
@@ -15,10 +16,12 @@ use gpui_kit::component::theme::Theme;
 use super::{PanelSkin, PanelView, SKIN_DARK_END, SKIN_PRESETS, ThemeChoice, View};
 use crate::app;
 
-/// 开发者署名、项目仓库与开源协议（关于卡片展示）
+/// 开发者署名、项目仓库与开源协议（关于卡片展示），以及点击后跳转的页面
 const AUTHOR: &str = "dsjerry";
+const AUTHOR_URL: &str = "https://github.com/dsjerry";
 const REPO_URL: &str = "https://github.com/nova-fable/stat-bar";
 const LICENSE: &str = "MIT";
+const LICENSE_URL: &str = "https://github.com/nova-fable/stat-bar/blob/main/LICENSE";
 
 pub fn render(
     cx: &mut Context<PanelView>,
@@ -147,28 +150,6 @@ pub fn render(
                         ),
                 ),
         )
-        // 关于：应用 / 版本 / 开发者 / 仓库 / 协议
-        .child(
-            div()
-                .flex()
-                .flex_col()
-                .gap_2()
-                .p_3()
-                .bg(super::card_bg(theme))
-                .border_1()
-                .border_color(theme.border)
-                .rounded(px(12.))
-                .child(section_title(theme, "关于"))
-                .child(kv_row(theme, "应用", "StatBar".into()))
-                .child(kv_row(
-                    theme,
-                    "版本",
-                    format!("v{}", env!("CARGO_PKG_VERSION")),
-                ))
-                .child(kv_row(theme, "开发者", AUTHOR.into()))
-                .child(kv_row(theme, "仓库", REPO_URL.into()))
-                .child(kv_row(theme, "协议", LICENSE.into())),
-        )
         // 框架信息
         .child(
             div()
@@ -186,6 +167,28 @@ pub fn render(
                 .child(kv_row(theme, "原生绑定", "objc2 0.6".into()))
                 .child(kv_row(theme, "渲染后端", "Metal".into()))
                 .child(kv_row(theme, "系统", os)),
+        )
+        // 关于：应用 / 版本 / 开发者 / 仓库 / 协议（开发者、仓库、协议可点击跳转）
+        .child(
+            div()
+                .flex()
+                .flex_col()
+                .gap_2()
+                .p_3()
+                .bg(super::card_bg(theme))
+                .border_1()
+                .border_color(theme.border)
+                .rounded(px(12.))
+                .child(section_title(theme, "关于"))
+                .child(kv_row(theme, "应用", "StatBar".into()))
+                .child(kv_row(
+                    theme,
+                    "版本",
+                    format!("v{}", env!("CARGO_PKG_VERSION")),
+                ))
+                .child(kv_link_row(theme, "author", "开发者", AUTHOR, AUTHOR_URL))
+                .child(kv_link_row(theme, "repo", "仓库", REPO_URL, REPO_URL))
+                .child(kv_link_row(theme, "license", "协议", LICENSE, LICENSE_URL)),
         )
 }
 
@@ -252,4 +255,36 @@ fn kv_row(theme: &Theme, label: &'static str, value: String) -> impl IntoElement
                 .text_color(theme.foreground)
                 .child(SharedString::from(value)),
         )
+}
+
+/// 键值行，右侧数值为链接色，点击用默认浏览器打开 url
+fn kv_link_row(
+    theme: &Theme,
+    id: &'static str,
+    label: &'static str,
+    value: &'static str,
+    url: &'static str,
+) -> impl IntoElement {
+    let hover = theme.link_hover;
+    div()
+        .flex()
+        .justify_between()
+        .child(div().text_color(theme.muted_foreground).child(label))
+        .child(
+            div()
+                .id(id)
+                .text_size(px(12.))
+                .text_color(theme.link)
+                .underline()
+                .cursor_pointer()
+                .hover(move |s| s.text_color(hover))
+                .on_click(move |_, _, _| open_url(url))
+                .child(value),
+        )
+}
+
+fn open_url(url: &str) {
+    if let Some(nsurl) = NSURL::URLWithString(&NSString::from_str(url)) {
+        NSWorkspace::sharedWorkspace().openURL(&nsurl);
+    }
 }

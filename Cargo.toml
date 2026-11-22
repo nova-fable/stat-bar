@@ -11,7 +11,7 @@ readme = "README.md"
 [dependencies]
 # AppKit 绑定：状态栏、菜单。特性按用到的类开启
 objc2 = "0.6"
-objc2-foundation = { version = "0.3", features = ["NSString", "NSTimer", "NSGeometry", "NSAttributedString", "NSDictionary", "NSRange", "NSUserDefaults"] }
+objc2-foundation = { version = "0.3", features = ["NSString", "NSTimer", "NSGeometry", "NSAttributedString", "NSDictionary", "NSRange", "NSURL", "NSUserDefaults"] }
 objc2-app-kit = { version = "0.3", features = [
     "NSApplication",
     "NSEvent",
